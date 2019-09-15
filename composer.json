@@ -1,0 +1,9 @@
+{
+  "name": "voximplant/pds-client",
+  "description": "pds-client on gRPC",
+  "require": {
+    "grpc/grpc": "^v1.3.0",
+    "google/protobuf": "^v3.3.0",
+    "vlucas/phpdotenv": "^3.6"
+  }
+}

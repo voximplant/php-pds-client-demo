@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+
+message PutTask {
+    bytes customData = 1;
+    string taskUUID = 2;
+}
+
+
+message Init {
+    Statistic init_stat = 1;
+    sint32 account_id = 2;
+    string api_key = 3;
+    sint32 rule_id = 4;
+    string reference_ip = 5;
+    sint32 queue_id = 6;
+    string session_id = 10; // optional. use to continue processing after disconnect
+
+    double maximum_error_rate = 12; // default: 0.02
+
+    sint32 version = 13;
+}
+
+message Statistic {
+    double avgTimeTalkSec = 1;
+    double percentSuccessful = 2;
+    double avgDialTimeSec = 3;
+    double avgTotalTimeSec = 4;
+}
+
+message ErrRate {
+    double maximum_error_rate = 1;
+}
+
+message RequestMessage {
+    enum Type {
+        PUT_TASK = 0;
+        INIT = 1;
+        SET_STATISTIC = 2;
+        SET_ERROR_RATE = 3;
+    }
+    Type type = 1;
+    PutTask task = 2;
+    Init init = 3;
+    Statistic statistic = 4;
+    ErrRate errRate = 5;
+}
+
+
+message GetTask {
+    sint32 count = 1;
+}
+
+message InitResponse {
+    string session_id = 1;
+}
+
+message ServiceMessage {
+    enum Type {
+        GET_TASK = 0;
+        INIT_RESPONSE = 1;
+    }
+
+    Type type = 1;
+    GetTask request = 2;
+    InitResponse init = 3;
+}
+
+
+service PDS {
+    rpc Start (stream RequestMessage) returns (stream ServiceMessage);
+}
